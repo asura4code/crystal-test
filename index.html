@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔮 尋找你的靈魂神隊友！命定水晶測驗</title>
+    <style>
+        /* 基礎設定與星空背景 */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100vh;
+            font-family: 'PingFang TC', 'Heiti TC', '微軟正黑體', sans-serif;
+            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+            color: #e0e6ed;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 簡單的 CSS 星星特效 */
+        .stars {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 50px 160px, #ddd, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 90px 40px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 130px 80px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 160px 120px, #ddd, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: twinkle 4s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* 主容器 - 玻璃擬物風格 (Glassmorphism) */
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 90%;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 0 20px rgba(138, 43, 226, 0.2);
+            text-align: center;
+            transition: all 0.5s ease;
+        }
+
+        h1, h2, h3 {
+            color: #d4af37; /* 神祕金色 */
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            margin-bottom: 20px;
+        }
+
+        p {
+            line-height: 1.6;
+            font-size: 1.1rem;
+            color: #c9d1d9;
+        }
+
+        /* 按鈕樣式 */
+        .btn {
+            background: linear-gradient(45deg, #4b0082, #8a2be2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-top: 20px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.6);
+        }
+
+        /* 測驗選項樣式 */
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .option-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+            line-height: 1.5;
+        }
+
+        .option-btn:hover {
+            background: rgba(138, 43, 226, 0.4);
+            border-color: #8a2be2;
+            transform: translateX(5px);
+        }
+
+        /* 進度條 */
+        .progress {
+            font-size: 0.9rem;
+            color: #8892b0;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* 結果卡片 */
+        .result-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .result-card h3 {
+            margin-top: 0;
+            color: #b19cd9;
+            border-bottom: 1px solid rgba(177, 156, 217, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .result-badge {
+            display: inline-block;
+            background: #d4af37;
+            color: #000;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        /* 頁面切換控制 */
+        .screen { display: none; }
+        .screen.active { 
+            display: block; 
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stars"></div>
+
+    <div class="container">
+        
+        <!-- 1. 測驗簡介 -->
+        <div id="intro-screen" class="screen active">
+            <h1>🔮 尋找你的靈魂神隊友</h1>
+            <p>每天在生活、工作、人際關係裡奔波，你是不是有時候也覺得需要一點正面能量的加持？</p>
+            <p>這份測驗將帶你模擬 5 個日常生活的場景，測出你當下最缺乏或最契合的能量，並從中找出哪一款水晶最適合成為你的命定守護星！</p>
+            <button class="btn" onclick="startQuiz()">開始測驗 ✨</button>
+        </div>
+
+        <!-- 2. 測驗問題區 -->
+        <div id="quiz-screen" class="screen">
+            <div class="progress" id="progress-text">Question 1 / 5</div>
+            <h2 id="question-text">題目</h2>
+            <div class="options" id="options-container">
+                <!-- 選項會透過 JS 動態產生 -->
+            </div>
+        </div>
+
+        <!-- 3. 結果顯示區 -->
+        <div id="result-screen" class="screen">
+            <h1>✨ 你的命定水晶 ✨</h1>
+            <p style="margin-bottom:30px;">根據星象與能量的指引，最適合你的水晶守護星是...</p>
+            <div id="results-container">
+                <!-- 結果會透過 JS 動態產生 -->
+            </div>
+            <button class="btn" onclick="restartQuiz()">🔄 再測一次</button>
+        </div>
+
+    </div>
+
+    <script>
+        // 題庫資料
+        const questions = [
+            {
+                question: "剛踏入一間裝潢超有質感的咖啡廳，你通常會優先選擇哪種座位？",
+                options: [
+                    { type: 'A', text: "光線充足、桌子寬敞，最適合打開筆電或看書的「高效率專注區」" },
+                    { type: 'B', text: "角落裡有沙發、光線微弱，能安靜放空或觀察路人的「文青沉思區」" },
+                    { type: 'C', text: "充滿粉嫩色調、花草植物環繞，適合跟朋友拍照聊天的「好人緣打卡區」" },
+                    { type: 'D', text: "靠近櫃檯或門口，方便看清店內動向、甚至能跟老闆攀談的「核心視野區」" },
+                    { type: 'E', text: "靠窗能看到街景、牆上貼滿旅行明信片的「自由流浪區」" }
+                ]
+            },
+            {
+                question: "星期五晚上下班或下課後，你最渴望的舒壓方式是什麼？",
+                options: [
+                    { type: 'A', text: "把房間徹底打掃一遍、斷捨離，看著乾淨的空間重新找回掌控感" },
+                    { type: 'B', text: "獨自戴上耳機聽音樂、冥想，或者看一部燒腦的科幻電影來激發靈感" },
+                    { type: 'C', text: "約好久不見的朋友吃大餐、做個 SPA，好好犒賞並療癒自己" },
+                    { type: 'D', text: "瘋狂看理財影片、規劃副業，或者跟朋友聊聊最近有什麼賺錢的商機" },
+                    { type: 'E', text: "參加聚會唱歌、去聽 Live House，或者在社群平台上大聊特聊自己的想法" }
+                ]
+            },
+            {
+                question: "如果你要開一間屬於自己的小店，你最希望它是一間怎樣的店？",
+                options: [
+                    { type: 'A', text: "現代極簡風的共享辦公室，提供最高效率與專注的工作環境" },
+                    { type: 'B', text: "充滿神祕感的身心靈占卜複合式書店，提供心靈與智慧的寄託" },
+                    { type: 'C', text: "溫馨浪漫的花藝甜點店，讓人一進來就感受到滿滿的幸福與愛" },
+                    { type: 'D', text: "獲利潛力高，能快速展店且每天點算營收的潮流選品店" },
+                    { type: 'E', text: "舉辦各類講座、脫口秀，能讓不同背景的人自由交流觀點的沙龍咖啡館" }
+                ]
+            },
+            {
+                question: "當你在生活中遇到卡關或壓力山大的突發狀況時，你的第一直覺反應是？",
+                options: [
+                    { type: 'A', text: "先冷靜深呼吸，把事情列成待辦清單，按部就班一一解決" },
+                    { type: 'B', text: "暫時抽離現場，相信自己的直覺，尋找平常沒想過的創意解法" },
+                    { type: 'C', text: "找另一半或閨蜜訴苦，吃頓甜食，需要先被理解和安慰" },
+                    { type: 'D', text: "迅速評估得失，管他三七二十一，先拿出行動力拼一把再說" },
+                    { type: 'E', text: "據理力爭！把自己的想法和邏輯講清楚，用強大的溝通能力去說服對方" }
+                ]
+            },
+            {
+                question: "明天就要出發去一趟期待已久的旅行，你的行李箱裡絕對不能少放什麼？",
+                options: [
+                    { type: 'A', text: "收納整齊的萬用充電線、萬用筆記本，確保所有行程都在掌控中" },
+                    { type: 'B', text: "一本探討哲學、心理學或充滿創意的小說，留給旅途中安靜思考的自己" },
+                    { type: 'C', text: "精心搭配的幾套戰袍與香水，隨時準備好邂逅浪漫或結交新朋友" },
+                    { type: 'D', text: "行動電源、備用現金與信用卡，保障一路上消費投資暢行無阻" },
+                    { type: 'E', text: "相機、隨身麥克風或日記本，隨時準備好記錄沿途風景並與世界分享" }
+                ]
+            }
+        ];
+
+        // 水晶結果資料
+        const crystalData = {
+            'A': { 
+                name: "🤍 白水晶 (White Crystal)", 
+                title: "思緒清晰的效率達人", 
+                traits: "你追求純粹與平衡，做事有條不紊。特別適合剛接觸水晶者、需要提升工作效率、淨化磁場、提升專注力或管理者。",
+                effects: "水晶之王，能量最純粹。具淨化、提升、專注、平衡、聚集正能量、防小人、思緒清晰、平定情緒之效。能淨化全身能量並放大其他水晶效果，增強記憶力。"
+            },
+            'B': { 
+                name: "💜 紫水晶 (Amethyst)", 
+                title: "內斂深度的智慧文青", 
+                traits: "你內心世界豐富，喜歡思考與尋求直覺。特別適合學生、需要冷靜思考、增長智慧、創意與直覺、尋求貴人相助或壓力大需靜心冥想者。",
+                effects: "智慧之石。啟發靈感與智慧、提升直覺力、平靜心靈、平衡情緒與環境能量場。有助於穩定理性、冷靜沉著、貴人相遇、化解小人，幫助靜心、冥想和集中注意力。"
+            },
+            'C': { 
+                name: "🩷 粉水晶 (Rose Quartz)", 
+                title: "精緻感性的療癒天使", 
+                traits: "你非常重視情感交流與生活中的溫柔。特別適合想增進感情、追求好人緣與戀愛運、做生意需要廣結善緣或追求身心療癒者。",
+                effects: "愛情之石。主愛情運，能招桃花、促進浪漫、自我及家庭之愛。具舒緩情緒、緩解壓力、人際關係增進好人緣、增強自我接納與內在平靜、緩和心輪壓力之效。"
+            },
+            'D': { 
+                name: "💛 黃水晶 (Citrine)", 
+                title: "極具野心的斜槓實踐家", 
+                traits: "你天生自帶敏銳度，渴望豐盛與成功。特別適合創業者、投資者、業務工作者、經商者、經營副業或斜槓兼職的人、需要提升行動力、邏輯思維或增強自信者。",
+                effects: "商人之石，代表財富與豐盛。招財事業運（主招偏財與穩定財運）、鎮定心情、降低恐懼、提升工作效率、增強自信與執行力。"
+            },
+            'E': { 
+                name: "🩵 海藍寶 (Aquamarine)", 
+                title: "勇於發聲的自由創作者", 
+                traits: "你渴望表達、熱愛自由與交流。特別適合需加強溝通能力、自信表達或經常表達需求高的行業（如作家、歌手、表演者、講師）以及旅行者。",
+                effects: "具自信表達之效，能增強自信與勇氣、提升溝通表達與說服力、恢復理性思緒。安撫情緒、帶來內心平靜，亦為旅途守護石。"
+            }
+        };
+
+        // 系統變數
+        let currentQuestion = 0;
+        let scores = { A: 0, B: 0, C: 0, D: 0, E: 0 };
+
+        // 頁面切換函數
+        function switchScreen(hideId, showId) {
+            document.getElementById(hideId).classList.remove('active');
+            setTimeout(() => {
+                document.getElementById(showId).classList.add('active');
+            }, 100);
+        }
+
+        // 開始測驗
+        function startQuiz() {
+            currentQuestion = 0;
+            scores = { A: 0, B: 0, C: 0, D: 0, E: 0 };
+            renderQuestion();
+            switchScreen('intro-screen', 'quiz-screen');
+        }
+
+        // 渲染題目與選項
+        function renderQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('progress-text').innerText = `Question ${currentQuestion + 1} / ${questions.length}`;
+            document.getElementById('question-text').innerText = q.question;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt.text;
+                btn.onclick = () => selectOption(opt.type);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        // 選擇答案與計分
+        function selectOption(type) {
+            scores[type]++;
+            currentQuestion++;
+            
+            if (currentQuestion < questions.length) {
+                renderQuestion();
+            } else {
+                calculateResult();
+            }
+        }
+
+        // 計算並顯示結果
+        function calculateResult() {
+            // 找出最高分
+            let maxScore = 0;
+            let topTypes = [];
+            
+            for (let type in scores) {
+                if (scores[type] > maxScore) {
+                    maxScore = scores[type];
+                    topTypes = [type];
+                } else if (scores[type] === maxScore) {
+                    topTypes.push(type); // 處理同分狀況
+                }
+            }
+
+            const resultsContainer = document.getElementById('results-container');
+            resultsContainer.innerHTML = '';
+
+            // 如果有多個最高分，提示多重宇宙能量
+            if (topTypes.length > 1) {
+                const multiNote = document.createElement('p');
+                multiNote.innerHTML = "🌟 <strong>你的能量非常多元！以下水晶都非常適合目前的你：</strong>";
+                multiNote.style.color = "#d4af37";
+                resultsContainer.appendChild(multiNote);
+            }
+
+            // 產出結果卡片
+            topTypes.forEach(type => {
+                const data = crystalData[type];
+                const card = document.createElement('div');
+                card.className = 'result-card';
+                card.innerHTML = `
+                    <div class="result-badge">${data.title}</div>
+                    <h3>${data.name}</h3>
+                    <p><strong>🔮 適合對象與人格描述：</strong><br>${data.traits}</p>
+                    <p><strong>✨ 功效與特性：</strong><br>${data.effects}</p>
+                `;
+                resultsContainer.appendChild(card);
+            });
+
+            switchScreen('quiz-screen', 'result-screen');
+        }
+
+        // 重新測驗
+        function restartQuiz() {
+            switchScreen('result-screen', 'intro-screen');
+            // 將視窗捲動回頂部
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>
